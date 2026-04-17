@@ -714,6 +714,35 @@
     .contact-value:hover { color: var(--white); }
     .qr-block img { width: 140px; height: 140px; object-fit: cover; }
 
+    /* ── SCROLL HINT ── */
+    .scroll-hint {
+      display: none;
+      align-items: center; justify-content: center; gap: .5rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .75rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--muted); margin: -.75rem 0 1.25rem;
+      animation: hintFade 2.5s ease 1.2s forwards;
+      opacity: 1;
+    }
+    .scroll-hint svg { width: 14px; animation: hintSlide 1.2s ease infinite; }
+    @keyframes hintFade  { to { opacity: 0; pointer-events: none; } }
+    @keyframes hintSlide { 0%,100%{transform:translateX(0)} 50%{transform:translateX(6px)} }
+
+    /* ── CAROUSEL DOTS ── */
+    .carousel-dots {
+      display: none;
+      justify-content: center; gap: .35rem;
+      margin-top: .85rem;
+    }
+    .carousel-dot {
+      width: 6px; height: 6px; border-radius: 3px;
+      background: var(--dark4); border: 1px solid rgba(255,255,255,.15);
+      transition: all .25s ease; cursor: pointer;
+    }
+    .carousel-dot.active {
+      width: 20px; background: var(--teal); border-color: var(--teal);
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       .nav-links { display: none; }
@@ -729,15 +758,88 @@
       .athletes-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 600px) {
-      .hero-actions { flex-direction: column; }
-      .products-grid { grid-template-columns: 1fr; }
-      .stats-inner { justify-content: flex-start; gap: 1.5rem; }
-      .gallery-grid { grid-template-columns: 1fr; }
+      /* hero */
+      .hero-actions { flex-direction: column; align-items: flex-start; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
+
+      /* stats bar */
+      .stats-inner { flex-direction: column; align-items: flex-start; gap: 1rem; padding: 0 .5rem; }
+
+      /* products — horizontal scroll carousel */
+      .products-grid {
+        display: flex;
+        overflow-x: auto; overflow-y: visible;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 1rem;
+        padding: .25rem .25rem 1rem;
+        margin: 0 -1.5rem;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        scrollbar-width: none;
+      }
+      .products-grid::-webkit-scrollbar { display: none; }
+      .product-card {
+        flex: 0 0 78vw;
+        max-width: 300px;
+        scroll-snap-align: start;
+      }
+
+      /* gallery — horizontal scroll carousel */
+      .gallery-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: .75rem;
+        margin: 0 -1.5rem;
+        padding: .25rem 1.5rem 1rem;
+        scrollbar-width: none;
+      }
+      .gallery-grid::-webkit-scrollbar { display: none; }
+      .gallery-item {
+        flex: 0 0 72vw;
+        max-width: 280px;
+        aspect-ratio: 3/4;
+        scroll-snap-align: start;
+        grid-column: auto !important; grid-row: auto !important;
+      }
+
+      /* athletes — horizontal scroll carousel */
+      .athletes-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 1rem;
+        margin: 0 -1.5rem;
+        padding: .25rem 1.5rem 1rem;
+        scrollbar-width: none;
+      }
+      .athletes-grid::-webkit-scrollbar { display: none; }
+      .athlete-card {
+        flex: 0 0 72vw;
+        max-width: 280px;
+        scroll-snap-align: start;
+      }
+
+      /* show scroll hints + dots */
+      .scroll-hint  { display: flex; }
+      .carousel-dots { display: flex; }
+
+      /* footer */
       .footer-grid { grid-template-columns: 1fr; }
       .footer-bottom { flex-direction: column; text-align: center; }
       .cart-drawer { width: 100vw; }
-      .athletes-grid { grid-template-columns: 1fr; }
       .contact-grid { gap: 2rem; }
+
+      /* merch size table scrollable */
+      .merch-sizes { overflow-x: auto; }
+
+      /* bigger tap targets */
+      .add-to-cart { padding: .8rem 1.25rem; font-size: .95rem; }
+      .btn { padding: .85rem 1.75rem; }
+      .nav-links a, .cart-btn { min-height: 44px; }
     }
   </style>
 </head>
@@ -857,8 +959,12 @@
       <h2>FOUR <span>PILLARS</span><br>OF PERFORMANCE</h2>
       <p>Every product engineered around what fighters actually need during camp. No fluff. No filler.</p>
     </div>
+    <div class="scroll-hint">
+      Swipe to explore
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
 
-    <div class="products-grid">
+    <div class="products-grid" id="productsCarousel">
 
       <!-- 1. Immune Booster -->
       <div class="product-card">
@@ -1011,7 +1117,11 @@
       <h2>BUILT FOR <span>FIGHTERS</span></h2>
       <p>Real supplements. Real fighters. Real results.</p>
     </div>
-    <div class="gallery-grid">
+    <div class="scroll-hint">
+      Swipe to explore
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+    <div class="gallery-grid" id="galleryCarousel">
       <div class="gallery-item"><img src="images/hero-creatine-athlete.jpeg" alt="Fighter using Creatine Pre-Workout" loading="lazy"></div>
       <div class="gallery-item"><img src="images/brand-athlete.jpeg" alt="4 Pillars athlete" loading="lazy"></div>
       <div class="gallery-item"><img src="images/product-whey-protein-dark.jpeg" alt="Whey Protein with kettlebell" loading="lazy"></div>
@@ -1032,7 +1142,11 @@
     <div class="athletes-collage">
       <img src="images/athletes-sponsored-collage.jpeg" alt="4 Pillars sponsored athletes" loading="lazy">
     </div>
-    <div class="athletes-grid">
+    <div class="scroll-hint">
+      Swipe to explore
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+    <div class="athletes-grid" id="athletesCarousel">
       <div class="athlete-card">
         <div class="athlete-img-wrap">
           <img src="images/athlete-luke-ackers.jpeg" alt="Luke Ackers — 4 Pillars sponsored athlete" loading="lazy">
@@ -1375,6 +1489,51 @@
 
   /* ── Init ── */
   renderCart();
+
+  /* ── Mobile Carousel Dots ── */
+  function initCarousels() {
+    if (window.innerWidth > 600) return;
+
+    const carousels = [
+      document.getElementById('productsCarousel'),
+      document.getElementById('galleryCarousel'),
+      document.getElementById('athletesCarousel'),
+    ];
+
+    carousels.forEach(el => {
+      if (!el || el.dataset.dotsReady) return;
+      el.dataset.dotsReady = '1';
+
+      const items = Array.from(el.children);
+      if (items.length < 2) return;
+
+      // build dots container
+      const wrap = document.createElement('div');
+      wrap.className = 'carousel-dots';
+      items.forEach((_, i) => {
+        const dot = document.createElement('span');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => {
+          const itemW = items[0].offsetWidth + parseFloat(getComputedStyle(el).gap || 16);
+          el.scrollTo({ left: i * itemW, behavior: 'smooth' });
+        });
+        wrap.appendChild(dot);
+      });
+      el.insertAdjacentElement('afterend', wrap);
+
+      // update active dot on scroll
+      el.addEventListener('scroll', () => {
+        const itemW = items[0].offsetWidth + parseFloat(getComputedStyle(el).gap || 16);
+        const idx = Math.min(Math.round(el.scrollLeft / itemW), items.length - 1);
+        wrap.querySelectorAll('.carousel-dot').forEach((d, i) => {
+          d.classList.toggle('active', i === idx);
+        });
+      }, { passive: true });
+    });
+  }
+
+  window.addEventListener('load', initCarousels);
+  window.addEventListener('resize', () => { initCarousels(); });
 </script>
 
 </body>

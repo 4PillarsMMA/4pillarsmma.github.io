@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4 PILLARS MMA — Built in the Cage</title>
+  <meta name="description" content="4 PILLARS MMA supplements. Built for fighters. Creatine, Whey Protein, Collagen, Immune Booster and Rashguards — engineered for the grind.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Yoco SDK -->
+  <script src="https://js.yoco.com/sdk/v1/yoco-sdk-web.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:    #2ec4c4;
+      --teal-dk: #1d8f8f;
+      --gold:    #d4a847;
+      --dark:    #080b0d;
+      --dark2:   #0f1417;
+      --dark3:   #161d22;
+      --dark4:   #1e272e;
+      --light:   #e8edf0;
+      --muted:   #7a8c96;
+      --white:   #ffffff;
+      --danger:  #c0392b;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark);
+      color: var(--light);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--dark2); }
+    ::-webkit-scrollbar-thumb { background: var(--teal-dk); border-radius: 3px; }
+
+    /* ── UTILITY ── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: .5rem;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .75rem 1.75rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      border: none; cursor: pointer;
+      transition: all .2s ease;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--teal);
+      color: var(--dark);
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    }
+    .btn-primary:hover { background: #3ed8d8; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(46,196,196,.35); }
+    .btn-outline {
+      background: transparent;
+      color: var(--teal);
+      border: 1.5px solid var(--teal);
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .btn-outline:hover { background: var(--teal); color: var(--dark); }
+    .btn-ghost { background: transparent; color: var(--light); border: none; cursor: pointer; font-family: inherit; }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+      padding: 1rem 0;
+      transition: background .3s ease, padding .3s ease;
+    }
+    nav.scrolled {
+      background: rgba(8,11,13,.95);
+      backdrop-filter: blur(12px);
+      padding: .6rem 0;
+      border-bottom: 1px solid rgba(46,196,196,.15);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      text-decoration: none;
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .nav-logo img {
+      height: 42px; width: 42px;
+      object-fit: contain;
+    }
+    .nav-logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      letter-spacing: .06em;
+      color: var(--white);
+      line-height: 1;
+    }
+    .nav-logo-text span { color: var(--teal); }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .95rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .cart-btn {
+      position: relative;
+      background: none; border: none; cursor: pointer;
+      color: var(--light); padding: .4rem;
+      transition: color .2s;
+    }
+    .cart-btn:hover { color: var(--teal); }
+    .cart-btn svg { width: 24px; height: 24px; }
+    .cart-count {
+      position: absolute; top: -4px; right: -4px;
+      background: var(--teal); color: var(--dark);
+      font-size: .65rem; font-weight: 700;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: scale(0);
+      transition: all .2s;
+    }
+    .cart-count.visible { opacity: 1; transform: scale(1); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: .4rem; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--light); transition: all .3s; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; height: 100vh; min-height: 600px;
+      display: flex; align-items: center;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('images/hero-whey-smoke.jpeg');
+      background-size: cover;
+      background-position: center 30%;
+      filter: brightness(.45);
+      transform: scale(1.05);
+      transition: transform 8s ease;
+    }
+    .hero-bg.loaded { transform: scale(1); }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(8,11,13,.8) 0%, rgba(8,11,13,.2) 60%, transparent 100%);
+    }
+    .hero-noise {
+      position: absolute; inset: 0;
+      opacity: .04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      max-width: 700px;
+    }
+    .hero-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .8rem; font-weight: 600;
+      letter-spacing: .3em; text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block;
+      width: 40px; height: 1.5px;
+      background: var(--teal);
+    }
+    .hero h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(3.5rem, 9vw, 7rem);
+      font-weight: 900;
+      line-height: .92;
+      text-transform: uppercase;
+      letter-spacing: -.01em;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--teal);
+    }
+    .hero p {
+      font-size: 1.05rem;
+      color: rgba(232,237,240,.75);
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+    }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      color: var(--muted); font-size: .75rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      font-family: 'Barlow Condensed', sans-serif;
+      z-index: 2; animation: bounce 2s infinite;
+    }
+    @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
+    .hero-scroll svg { width: 20px; opacity: .5; }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: var(--dark3);
+      border-top: 1px solid rgba(46,196,196,.1);
+      border-bottom: 1px solid rgba(46,196,196,.1);
+      padding: 1.25rem 0;
+    }
+    .stats-inner {
+      display: flex; align-items: center; justify-content: space-around;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .stat {
+      display: flex; align-items: center; gap: .75rem;
+      font-family: 'Barlow Condensed', sans-serif;
+    }
+    .stat-icon { color: var(--teal); font-size: 1.4rem; }
+    .stat-text { font-size: .8rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+    .stat-value { font-size: 1.1rem; font-weight: 700; color: var(--white); }
+
+    /* ── SECTION HEADERS ── */
+    .section-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+    .section-header h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1;
+      letter-spacing: -.01em;
+    }
+    .section-header h2 span { color: var(--teal); }
+    .section-header p { color: var(--muted); max-width: 520px; margin: 1rem auto 0; }
+
+    /* ── PRODUCTS ── */
+    #products { padding: 6rem 0; }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .product-card {
+      background: var(--dark3);
+      border: 1px solid rgba(255,255,255,.06);
+      transition: border-color .3s, transform .3s, box-shadow .3s;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .product-card:hover {
+      border-color: rgba(46,196,196,.4);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,.5), 0 0 0 1px rgba(46,196,196,.15);
+    }
+    .product-badge {
+      position: absolute; top: 1rem; left: 1rem; z-index: 2;
+      background: var(--teal); color: var(--dark);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .7rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .2rem .6rem;
+    }
+    .product-img-wrap {
+      position: relative; overflow: hidden;
+      aspect-ratio: 3/4; background: var(--dark4);
+    }
+    .product-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .5s ease;
+    }
+    .product-card:hover .product-img-wrap img { transform: scale(1.06); }
+    .product-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(8,11,13,.7) 0%, transparent 50%);
+    }
+    .product-body {
+      padding: 1.25rem 1.25rem 1.5rem;
+      flex: 1; display: flex; flex-direction: column;
+    }
+    .product-number {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .7rem; letter-spacing: .15em;
+      text-transform: uppercase; color: var(--teal);
+      margin-bottom: .25rem;
+    }
+    .product-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.5rem; font-weight: 900;
+      text-transform: uppercase; line-height: 1.1;
+      color: var(--white); margin-bottom: .25rem;
+    }
+    .product-sub {
+      font-size: .8rem; color: var(--muted);
+      margin-bottom: .75rem;
+    }
+    .product-desc {
+      font-size: .88rem; color: rgba(232,237,240,.65);
+      line-height: 1.55; margin-bottom: 1rem; flex: 1;
+    }
+    .product-tags {
+      display: flex; flex-wrap: wrap; gap: .4rem;
+      margin-bottom: 1.25rem;
+    }
+    .tag {
+      font-size: .7rem; font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+      padding: .2rem .55rem;
+      border: 1px solid rgba(46,196,196,.3);
+      color: var(--teal); background: rgba(46,196,196,.07);
+    }
+    .product-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: auto;
+    }
+    .product-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.8rem; font-weight: 900;
+      color: var(--white);
+    }
+    .product-price sup { font-size: 1rem; vertical-align: super; }
+    .add-to-cart {
+      background: var(--teal); color: var(--dark);
+      border: none; cursor: pointer;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .85rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .65rem 1.1rem;
+      transition: all .2s;
+      display: flex; align-items: center; gap: .4rem;
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    }
+    .add-to-cart:hover { background: #3ed8d8; transform: translateY(-1px); }
+    .add-to-cart.added { background: var(--gold); }
+    .add-to-cart svg { width: 16px; height: 16px; }
+
+    /* ── CART DRAWER ── */
+    .cart-overlay {
+      position: fixed; inset: 0; z-index: 990;
+      background: rgba(0,0,0,.6);
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s;
+      backdrop-filter: blur(4px);
+    }
+    .cart-overlay.open { opacity: 1; pointer-events: all; }
+    .cart-drawer {
+      position: fixed; top: 0; right: 0; bottom: 0; z-index: 995;
+      width: min(420px, 100vw);
+      background: var(--dark2);
+      border-left: 1px solid rgba(46,196,196,.15);
+      transform: translateX(100%);
+      transition: transform .35s cubic-bezier(.4,0,.2,1);
+      display: flex; flex-direction: column;
+    }
+    .cart-drawer.open { transform: translateX(0); }
+    .cart-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .cart-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.3rem; font-weight: 900;
+      text-transform: uppercase; letter-spacing: .05em;
+    }
+    .cart-close {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); padding: .3rem;
+      transition: color .2s;
+    }
+    .cart-close:hover { color: var(--white); }
+    .cart-close svg { width: 22px; height: 22px; }
+    .cart-items { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; }
+    .cart-empty {
+      height: 100%; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 1rem;
+      color: var(--muted); text-align: center;
+    }
+    .cart-empty svg { width: 48px; height: 48px; opacity: .3; }
+    .cart-empty p { font-size: .9rem; }
+    .cart-item {
+      display: grid; grid-template-columns: 64px 1fr auto;
+      gap: 1rem; align-items: start;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .cart-item-img {
+      width: 64px; height: 64px;
+      object-fit: cover;
+      background: var(--dark4);
+    }
+    .cart-item-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700; font-size: 1rem;
+      text-transform: uppercase; line-height: 1.2;
+      margin-bottom: .2rem;
+    }
+    .cart-item-sub { font-size: .78rem; color: var(--muted); }
+    .cart-item-price { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; color: var(--teal); }
+    .cart-qty {
+      display: flex; align-items: center; gap: .5rem;
+      margin-top: .5rem;
+    }
+    .qty-btn {
+      width: 24px; height: 24px;
+      background: var(--dark4); border: 1px solid rgba(255,255,255,.1);
+      color: var(--light); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; transition: border-color .2s;
+    }
+    .qty-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .qty-val { font-size: .9rem; min-width: 20px; text-align: center; }
+    .cart-item-remove {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); padding: .2rem;
+      font-size: 1rem; transition: color .2s;
+      align-self: start;
+    }
+    .cart-item-remove:hover { color: var(--danger); }
+    .cart-footer {
+      padding: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .cart-subtotal {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .cart-subtotal-label { font-size: .85rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-family: 'Barlow Condensed', sans-serif; }
+    .cart-subtotal-amount { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 900; }
+    .checkout-btn {
+      width: 100%;
+      background: var(--teal); color: var(--dark);
+      border: none; cursor: pointer;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.05rem; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      padding: 1rem;
+      transition: all .2s;
+    }
+    .checkout-btn:hover { background: #3ed8d8; }
+    .checkout-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .secure-note {
+      display: flex; align-items: center; justify-content: center; gap: .4rem;
+      margin-top: .75rem; font-size: .72rem;
+      color: var(--muted); letter-spacing: .05em;
+    }
+    .secure-note svg { width: 12px; }
+
+    /* ── GALLERY / LIFESTYLE ── */
+    #lifestyle { padding: 6rem 0; background: var(--dark2); }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(2, 260px);
+      gap: 1rem;
+    }
+    .gallery-item {
+      overflow: hidden; position: relative;
+    }
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .6s ease;
+    }
+    .gallery-item:hover img { transform: scale(1.07); }
+    .gallery-item:nth-child(1) { grid-column: 1/6; grid-row: 1/2; }
+    .gallery-item:nth-child(2) { grid-column: 6/9; grid-row: 1/3; }
+    .gallery-item:nth-child(3) { grid-column: 9/13; grid-row: 1/2; }
+    .gallery-item:nth-child(4) { grid-column: 1/6; grid-row: 2/3; }
+    .gallery-item:nth-child(5) { grid-column: 9/13; grid-row: 2/3; }
+
+    /* ── ABOUT / PHILOSOPHY ── */
+    #about { padding: 6rem 0; }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+    }
+    .about-img-wrap {
+      position: relative;
+    }
+    .about-img-wrap img {
+      width: 100%; aspect-ratio: 3/4;
+      object-fit: cover;
+    }
+    .about-img-wrap::before {
+      content: '';
+      position: absolute; top: -12px; left: -12px; right: 12px; bottom: 12px;
+      border: 2px solid rgba(46,196,196,.25);
+      pointer-events: none; z-index: -1;
+    }
+    .about-content h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900; text-transform: uppercase;
+      line-height: 1.05; margin-bottom: 1.25rem;
+    }
+    .about-content h2 span { color: var(--teal); }
+    .about-content p {
+      color: rgba(232,237,240,.7);
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+    .pillars-list {
+      list-style: none; margin: 1.75rem 0;
+      display: flex; flex-direction: column; gap: .75rem;
+    }
+    .pillars-list li {
+      display: flex; align-items: center; gap: .75rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.05rem; font-weight: 600; letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .pillar-num {
+      width: 28px; height: 28px;
+      background: rgba(46,196,196,.15);
+      border: 1px solid var(--teal);
+      color: var(--teal);
+      font-size: .75rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark2);
+      border-top: 1px solid rgba(255,255,255,.05);
+      padding: 3rem 0 2rem;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 2.5rem; margin-bottom: 2.5rem;
+    }
+    .footer-brand p { color: var(--muted); font-size: .88rem; line-height: 1.6; margin-top: .75rem; max-width: 280px; }
+    .footer-col h4 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .8rem; font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 1rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+    .footer-col a { color: var(--muted); font-size: .88rem; text-decoration: none; transition: color .2s; }
+    .footer-col a:hover { color: var(--light); }
+    .footer-bottom {
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,.05);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+      font-size: .78rem; color: var(--muted);
+    }
+    .footer-badges { display: flex; gap: .75rem; align-items: center; }
+    .yoco-badge {
+      background: rgba(46,196,196,.1); border: 1px solid rgba(46,196,196,.2);
+      color: var(--teal); font-family: 'Barlow Condensed', sans-serif;
+      font-size: .7rem; font-weight: 700; letter-spacing: .05em;
+      padding: .3rem .6rem; text-transform: uppercase;
+    }
+
+    /* ── MOBILE NAV MENU ── */
+    .mobile-menu {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 950;
+      background: var(--dark2);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 2rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2.5rem; font-weight: 900;
+      text-transform: uppercase; letter-spacing: .05em;
+      color: var(--white); text-decoration: none;
+      transition: color .2s;
+    }
+    .mobile-menu a:hover { color: var(--teal); }
+    .mobile-close {
+      position: absolute; top: 1.25rem; right: 1.5rem;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted);
+    }
+    .mobile-close svg { width: 28px; height: 28px; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: var(--dark3); border: 1px solid rgba(46,196,196,.3);
+      color: var(--white);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .95rem; font-weight: 600; letter-spacing: .05em;
+      padding: .8rem 1.5rem; z-index: 999;
+      transition: transform .35s cubic-bezier(.4,0,.2,1);
+      display: flex; align-items: center; gap: .5rem;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast-icon { color: var(--teal); }
+
+    /* ── MERCH ── */
+    .merch-card {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 3rem; align-items: center;
+      background: var(--dark3);
+      border: 1px solid rgba(46,196,196,.12);
+      overflow: hidden;
+    }
+    .merch-img-wrap { overflow: hidden; }
+    .merch-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s; }
+    .merch-card:hover .merch-img-wrap img { transform: scale(1.04); }
+    .merch-body { padding: 2.5rem 2.5rem 2.5rem 0; }
+    .merch-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2rem; font-weight: 900;
+      text-transform: uppercase; line-height: 1.1;
+      margin-bottom: .75rem;
+    }
+    .merch-desc { color: rgba(232,237,240,.65); font-size: .9rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    .merch-sizes { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1.75rem; }
+    .size-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: .5rem .75rem;
+      background: rgba(255,255,255,.04);
+      border-left: 2px solid var(--teal);
+      font-size: .88rem;
+    }
+    .size-label { color: var(--light); }
+    .size-price { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; color: var(--teal); }
+
+    /* ── ATHLETES ── */
+    .athletes-collage {
+      margin-bottom: 2.5rem;
+      overflow: hidden;
+      max-width: 500px; margin-left: auto; margin-right: auto;
+    }
+    .athletes-collage img { width: 100%; display: block; }
+    .athletes-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .athlete-card {
+      position: relative; overflow: hidden;
+      background: var(--dark3);
+      border: 1px solid rgba(255,255,255,.06);
+      transition: border-color .3s, transform .3s;
+    }
+    .athlete-card:hover { border-color: rgba(46,196,196,.35); transform: translateY(-3px); }
+    .athlete-img-wrap { position: relative; overflow: hidden; aspect-ratio: 3/4; }
+    .athlete-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+    .athlete-card:hover .athlete-img-wrap img { transform: scale(1.05); }
+    .athlete-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(8,11,13,.85) 0%, transparent 55%);
+    }
+    .athlete-info {
+      padding: 1.25rem;
+      position: absolute; bottom: 0; left: 0; right: 0;
+    }
+    .athlete-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.6rem; font-weight: 900;
+      text-transform: uppercase; line-height: 1;
+      color: var(--white);
+    }
+    .athlete-sub { font-size: .8rem; color: var(--teal); font-family: 'Barlow Condensed', sans-serif; letter-spacing: .08em; text-transform: uppercase; margin-top: .2rem; }
+
+    /* ── CONTACT ── */
+    .contact-grid {
+      display: flex; justify-content: center; align-items: flex-start;
+      gap: 3rem; flex-wrap: wrap;
+    }
+    .contact-block {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: .4rem;
+    }
+    .contact-icon { font-size: 2rem; }
+    .contact-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .75rem; letter-spacing: .15em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .contact-value {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.3rem; font-weight: 700;
+      color: var(--teal); text-decoration: none;
+      transition: color .2s;
+    }
+    .contact-value:hover { color: var(--white); }
+    .qr-block img { width: 140px; height: 140px; object-fit: cover; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .about-img-wrap { max-width: 420px; }
+      .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .gallery-item { grid-column: auto!important; grid-row: auto!important; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: 1/-1; }
+      .merch-card { grid-template-columns: 1fr; }
+      .merch-body { padding: 1.5rem; }
+      .athletes-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .hero-actions { flex-direction: column; }
+      .products-grid { grid-template-columns: 1fr; }
+      .stats-inner { justify-content: flex-start; gap: 1.5rem; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .cart-drawer { width: 100vw; }
+      .athletes-grid { grid-template-columns: 1fr; }
+      .contact-grid { gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── MOBILE MENU ─────────────────────────────────────────── -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="toggleMobileMenu()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <a href="#products" onclick="toggleMobileMenu()">Products</a>
+  <a href="#merch" onclick="toggleMobileMenu()">Merch</a>
+  <a href="#athletes" onclick="toggleMobileMenu()">Athletes</a>
+  <a href="#about" onclick="toggleMobileMenu()">About</a>
+  <a href="#contact" onclick="toggleMobileMenu()">Contact</a>
+</div>
+
+<!-- ── NAVBAR ──────────────────────────────────────────────── -->
+<nav id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="images/logo-icon.jpeg" alt="4 Pillars MMA logo">
+        <div class="nav-logo-text">4 <span>PILLARS</span></div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#products">Products</a></li>
+        <li><a href="#merch">Merch</a></li>
+        <li><a href="#athletes">Athletes</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <div class="nav-right">
+        <button class="cart-btn" onclick="toggleCart()" aria-label="Open cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 01-8 0"/>
+          </svg>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+        <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────────────────── -->
+<section class="hero" id="home">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-noise"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Built in the Cage</div>
+      <h1>FIGHT-CAMP<br><em>FORMULA</em></h1>
+      <p>Camp is where 95% of the fight is won. 4 PILLARS is engineered for the grind — every session, every round, every rep.</p>
+      <div class="hero-actions">
+        <a href="#products" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Shop Now
+        </a>
+        <a href="#about" class="btn btn-outline">Our Story</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    Scroll
+  </div>
+</section>
+
+<!-- ── STATS BAR ────────────────────────────────────────────── -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="stats-inner">
+      <div class="stat">
+        <span class="stat-icon">⚡</span>
+        <div>
+          <div class="stat-value">4 Products</div>
+          <div class="stat-text">Fight-camp range</div>
+        </div>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">🇿🇦</span>
+        <div>
+          <div class="stat-value">South Africa</div>
+          <div class="stat-text">Priced in ZAR</div>
+        </div>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">🥊</span>
+        <div>
+          <div class="stat-value">MMA Tested</div>
+          <div class="stat-text">Built for fighters</div>
+        </div>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">🔒</span>
+        <div>
+          <div class="stat-value">Secure Checkout</div>
+          <div class="stat-text">Powered by Yoco</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PRODUCTS ─────────────────────────────────────────────── -->
+<section id="products">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">The Range</div>
+      <h2>FOUR <span>PILLARS</span><br>OF PERFORMANCE</h2>
+      <p>Every product engineered around what fighters actually need during camp. No fluff. No filler.</p>
+    </div>
+
+    <div class="products-grid">
+
+      <!-- 1. Immune Booster -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="images/product-vitamin-fizzy.jpeg" alt="4 Pillars Immune Booster" loading="lazy">
+          <div class="product-img-overlay"></div>
+        </div>
+        <div class="product-body">
+          <div class="product-number">01 / Pillar One</div>
+          <div class="product-name">Immune Booster</div>
+          <div class="product-sub">Vitamin C + Zinc + Vitamin D3 — Cherry Flavour</div>
+          <p class="product-desc">Stay standing when the workload spikes. Immune support packed into a daily dose — Vitamin C, Zinc and D3 to keep you training when others tap out.</p>
+          <div class="product-tags">
+            <span class="tag">Vitamin C</span>
+            <span class="tag">Zinc</span>
+            <span class="tag">Vitamin D3</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price"><sup>R</sup>77</div>
+            <button class="add-to-cart" onclick="addToCart(1, 'Immune Booster', 77, 'Vitamin C + Zinc + D3', 'images/product-vitamin-fizzy.jpeg')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Creatine Pre-Workout -->
+      <div class="product-card">
+        <div class="product-badge">Best Seller</div>
+        <div class="product-img-wrap">
+          <img src="images/hero-creatine-water.jpeg" alt="4 Pillars Creatine Pre-Workout" loading="lazy">
+          <div class="product-img-overlay"></div>
+        </div>
+        <div class="product-body">
+          <div class="product-number">02 / Pillar Two</div>
+          <div class="product-name">Creatine Pre-Workout</div>
+          <div class="product-sub">500g Tube — Blueberry Flavoured</div>
+          <p class="product-desc">Built for long rounds, not quick bursts. Creatine, caffeine, citrulline malate and beta-alanine — the formula that keeps you firing in round five the same as round one.</p>
+          <div class="product-tags">
+            <span class="tag">Creatine</span>
+            <span class="tag">Caffeine</span>
+            <span class="tag">Citrulline</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price"><sup>R</sup>350</div>
+            <button class="add-to-cart" onclick="addToCart(2, 'Creatine Pre-Workout', 350, '500g Tube', 'images/hero-creatine-water.jpeg')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Collagen -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="images/promo-collagen.jpeg" alt="4 Pillars Collagen" loading="lazy">
+          <div class="product-img-overlay"></div>
+        </div>
+        <div class="product-body">
+          <div class="product-number">03 / Pillar Three</div>
+          <div class="product-name">Collagen</div>
+          <div class="product-sub">300g Tube</div>
+          <p class="product-desc">Stay strong where impact hits hardest. Collagen, MSM and Q10 to keep your joints and tendons battle-ready through high-volume camp. Protect what you can't replace.</p>
+          <div class="product-tags">
+            <span class="tag">Collagen</span>
+            <span class="tag">MSM</span>
+            <span class="tag">Joint Support</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price"><sup>R</sup>295</div>
+            <button class="add-to-cart" onclick="addToCart(3, 'Collagen', 295, '300g Tube', 'images/product-collagen.jpeg')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Whey Protein -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="images/hero-whey-smoke.jpeg" alt="4 Pillars Whey Protein" loading="lazy">
+          <div class="product-img-overlay"></div>
+        </div>
+        <div class="product-body">
+          <div class="product-number">04 / Pillar Four</div>
+          <div class="product-name">Whey Protein</div>
+          <div class="product-sub">1kg Tube — Chocolate Flavoured</div>
+          <p class="product-desc">Repair. Rebuild. Come back stronger. Post-workout whey protein with Vitamin B Complex — the rebuild formula for fighters who train twice a day and need to be ready to do it again tomorrow.</p>
+          <div class="product-tags">
+            <span class="tag">Whey Protein</span>
+            <span class="tag">Vitamin B</span>
+            <span class="tag">Recovery</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price"><sup>R</sup>645</div>
+            <button class="add-to-cart" onclick="addToCart(4, 'Whey Protein', 645, '1kg Tube', 'images/hero-whey-smoke.jpeg')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── MERCH ───────────────────────────────────────────────────── -->
+<section id="merch" style="padding:5rem 0; background:var(--dark2);">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Gear Up</div>
+      <h2>FIGHT <span>MERCH</span></h2>
+      <p>Represent the cage. 4 PILLARS rashguards built to move like you do.</p>
+    </div>
+    <div class="merch-card">
+      <div class="merch-img-wrap">
+        <img src="images/merch-rashguard.jpeg" alt="4 Pillars MMA Rashguard Collection" loading="lazy">
+      </div>
+      <div class="merch-body">
+        <div class="section-label">New Collection</div>
+        <h3 class="merch-name">4 PILLARS RASHGUARD</h3>
+        <p class="merch-desc">The official 4 PILLARS fight rashguard. Chain-link design, built for the cage. Available in kids and adult sizes.</p>
+        <div class="merch-sizes">
+          <div class="size-row"><span class="size-label">Kids (1–2 to 11–12)</span><span class="size-price">R450</span></div>
+          <div class="size-row"><span class="size-label">Kids (13–14 / XS)</span><span class="size-price">R490</span></div>
+          <div class="size-row"><span class="size-label">Adult (S – XL)</span><span class="size-price">R520</span></div>
+          <div class="size-row"><span class="size-label">Adult (XXL – 4XL)</span><span class="size-price">R560</span></div>
+        </div>
+        <div class="merch-actions">
+          <button class="add-to-cart" onclick="addToCart(5, '4P Rashguard', 520, 'Adult S–XL', 'images/merch-rashguard.jpeg')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg>
+            Add to Cart — from R450
+          </button>
+          <p style="font-size:.75rem; color:var(--muted); margin-top:.6rem;">Contact us for exact size &amp; price. DM <a href="https://instagram.com/4_pillarsmma" target="_blank" rel="noopener" style="color:var(--teal); text-decoration:none;">@4_pillarsmma</a> or call <a href="tel:0655717718" style="color:var(--teal); text-decoration:none;">065 571 7718</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── LIFESTYLE GALLERY ──────────────────────────────────────── -->
+<section id="lifestyle" style="padding:6rem 0;">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">In the Cage</div>
+      <h2>BUILT FOR <span>FIGHTERS</span></h2>
+      <p>Real supplements. Real fighters. Real results.</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item"><img src="images/hero-creatine-athlete.jpeg" alt="Fighter using Creatine Pre-Workout" loading="lazy"></div>
+      <div class="gallery-item"><img src="images/brand-athlete.jpeg" alt="4 Pillars athlete" loading="lazy"></div>
+      <div class="gallery-item"><img src="images/product-whey-protein-dark.jpeg" alt="Whey Protein with kettlebell" loading="lazy"></div>
+      <div class="gallery-item"><img src="images/hero-creatine-water.jpeg" alt="Creatine Pre-Workout in action" loading="lazy"></div>
+      <div class="gallery-item"><img src="images/athlete-training-bw.jpeg" alt="Fighter training" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SPONSORED ATHLETES ─────────────────────────────────────── -->
+<section id="athletes" style="padding:6rem 0; background:var(--dark2);">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Our Team</div>
+      <h2>SPONSORED <span>ATHLETES</span></h2>
+      <p>4 PILLARS fuels fighters who compete at the highest level.</p>
+    </div>
+    <div class="athletes-collage">
+      <img src="images/athletes-sponsored-collage.jpeg" alt="4 Pillars sponsored athletes" loading="lazy">
+    </div>
+    <div class="athletes-grid">
+      <div class="athlete-card">
+        <div class="athlete-img-wrap">
+          <img src="images/athlete-luke-ackers.jpeg" alt="Luke Ackers — 4 Pillars sponsored athlete" loading="lazy">
+          <div class="athlete-overlay"></div>
+        </div>
+        <div class="athlete-info">
+          <div class="section-label">Sponsored Athlete</div>
+          <div class="athlete-name">Luke Ackers</div>
+          <div class="athlete-sub">MMA Fighter</div>
+        </div>
+      </div>
+      <div class="athlete-card">
+        <div class="athlete-img-wrap">
+          <img src="images/athlete-ethan-rheeder.jpeg" alt="Ethan Rheeder — 4 Pillars sponsored athlete" loading="lazy">
+          <div class="athlete-overlay"></div>
+        </div>
+        <div class="athlete-info">
+          <div class="section-label">Sponsored Athlete</div>
+          <div class="athlete-name">Ethan Rheeder</div>
+          <div class="athlete-sub">MMA Fighter</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ─────────────────────────────────────────────────── -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap">
+        <img src="images/brand-athlete.jpeg" alt="4 Pillars MMA athlete">
+      </div>
+      <div class="about-content">
+        <div class="section-label">Our Philosophy</div>
+        <h2>BACKED BY<br><span>SCIENCE</span><br>BUILT FOR<br>THE CAGE</h2>
+        <p>4 PILLARS was created by fighters, for fighters. We didn't build supplements for the gym mirror — we built them for the mats, the pads, and the cage.</p>
+        <p>Every formula is anchored around what combat athletes actually need: endurance that holds up under pressure, recovery that keeps you training, and support for the joints that take the most punishment.</p>
+        <ul class="pillars-list">
+          <li><span class="pillar-num">1</span> Power &amp; Endurance</li>
+          <li><span class="pillar-num">2</span> Strength &amp; Recovery</li>
+          <li><span class="pillar-num">3</span> Joint &amp; Tendon Support</li>
+          <li><span class="pillar-num">4</span> Immune Resilience</li>
+        </ul>
+        <a href="#products" class="btn btn-primary">Shop the Range</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ───────────────────────────────────────────────── -->
+<section id="contact" style="padding:5rem 0; background: var(--dark3);">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Get in Touch</div>
+      <h2>QUESTIONS? <span>TALK TO US</span></h2>
+      <p>For orders, wholesale, stockist enquiries, or sizing — reach us directly.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-block">
+        <div class="contact-icon">📞</div>
+        <div class="contact-label">Call / WhatsApp</div>
+        <a href="tel:0655717718" class="contact-value">065 571 7718</a>
+      </div>
+      <div class="contact-block">
+        <div class="contact-icon">📸</div>
+        <div class="contact-label">Instagram</div>
+        <a href="https://instagram.com/4_pillarsmma" target="_blank" rel="noopener" class="contact-value">@4_pillarsmma</a>
+      </div>
+      <div class="contact-block qr-block">
+        <img src="images/instagram-qr.jpeg" alt="Instagram QR code @4_PILLARSMMA" loading="lazy">
+        <div class="contact-label" style="margin-top:.5rem;">Scan to Follow</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ────────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo" style="margin-bottom:.75rem; display:inline-flex;">
+          <img src="images/logo-icon.jpeg" alt="4 Pillars MMA" style="height:36px;width:36px;object-fit:contain;">
+          <div class="nav-logo-text">4 <span>PILLARS</span></div>
+        </a>
+        <p>Built in the Cage. Backed by Science. Made for fighters who refuse to tap out of their own potential.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="#products">Immune Booster — R77</a></li>
+          <li><a href="#products">Creatine Pre-Workout — R350</a></li>
+          <li><a href="#products">Collagen — R295</a></li>
+          <li><a href="#products">Whey Protein — R645</a></li>
+          <li><a href="#merch">Rashguard — from R450</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a href="#about">About 4 Pillars</a></li>
+          <li><a href="#athletes">Sponsored Athletes</a></li>
+          <li><a href="tel:0655717718">065 571 7718</a></li>
+          <li><a href="https://instagram.com/4_pillarsmma" target="_blank" rel="noopener">@4_pillarsmma</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 4 PILLARS MMA. All rights reserved.</span>
+      <div class="footer-badges">
+        <span class="yoco-badge">Secured by Yoco</span>
+        <span style="color:var(--muted); font-size:.7rem;">ZAR · South Africa</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ── CART DRAWER ────────────────────────────────────────────── -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <div class="cart-title">Your Cart</div>
+    <button class="cart-close" onclick="toggleCart()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+      <p>Your cart is empty.<br>Add a product to get started.</p>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-subtotal">
+      <span class="cart-subtotal-label">Subtotal</span>
+      <span class="cart-subtotal-amount" id="cartTotal">R0</span>
+    </div>
+    <button class="checkout-btn" id="checkoutBtn" onclick="initiateCheckout()">
+      Checkout with Yoco
+    </button>
+    <div class="secure-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Secure payment powered by Yoco
+    </div>
+  </div>
+</aside>
+
+<!-- ── TOAST ──────────────────────────────────────────────────── -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <span id="toastMsg">Item added to cart</span>
+</div>
+
+<!-- ── SCRIPTS ───────────────────────────────────────────────── -->
+<script>
+  /* ── Navbar scroll ── */
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  /* ── Hero bg loaded ── */
+  window.addEventListener('load', () => {
+    document.getElementById('heroBg').classList.add('loaded');
+  });
+
+  /* ── Mobile menu ── */
+  function toggleMobileMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  /* ── Toast ── */
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  /* ── Cart State ── */
+  let cart = {};  // { id: { id, name, price, sub, img, qty } }
+
+  function addToCart(id, name, price, sub, img) {
+    if (cart[id]) {
+      cart[id].qty++;
+    } else {
+      cart[id] = { id, name, price, sub, img, qty: 1 };
+    }
+    renderCart();
+    showToast(`${name} added to cart`);
+    openCart();
+  }
+
+  function removeFromCart(id) {
+    delete cart[id];
+    renderCart();
+  }
+
+  function changeQty(id, delta) {
+    if (!cart[id]) return;
+    cart[id].qty += delta;
+    if (cart[id].qty <= 0) removeFromCart(id);
+    else renderCart();
+  }
+
+  function renderCart() {
+    const items = Object.values(cart);
+    const count = items.reduce((s, i) => s + i.qty, 0);
+    const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+
+    /* count badge */
+    const badge = document.getElementById('cartCount');
+    badge.textContent = count;
+    badge.classList.toggle('visible', count > 0);
+
+    /* cart items */
+    const container = document.getElementById('cartItems');
+    const empty = document.getElementById('cartEmpty');
+    const footer = document.getElementById('cartFooter');
+
+    if (items.length === 0) {
+      container.innerHTML = '';
+      container.appendChild(empty);
+      empty.style.display = 'flex';
+      footer.style.display = 'none';
+      return;
+    }
+
+    empty.style.display = 'none';
+    footer.style.display = 'block';
+    document.getElementById('cartTotal').textContent = `R${total}`;
+
+    container.innerHTML = '';
+    items.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'cart-item';
+      el.innerHTML = `
+        <img class="cart-item-img" src="${item.img}" alt="${item.name}">
+        <div>
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-sub">${item.sub}</div>
+          <div class="cart-qty">
+            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+            <span class="qty-val">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+          </div>
+        </div>
+        <div>
+          <div class="cart-item-price">R${item.price * item.qty}</div>
+          <button class="cart-item-remove" onclick="removeFromCart(${item.id})" title="Remove">✕</button>
+        </div>
+      `;
+      container.appendChild(el);
+    });
+  }
+
+  /* ── Cart drawer ── */
+  function openCart() {
+    document.getElementById('cartDrawer').classList.add('open');
+    document.getElementById('cartOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCart() {
+    document.getElementById('cartDrawer').classList.remove('open');
+    document.getElementById('cartOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function toggleCart() {
+    const isOpen = document.getElementById('cartDrawer').classList.contains('open');
+    isOpen ? closeCart() : openCart();
+  }
+
+  /* ── Yoco Checkout ── */
+  /*
+   * SETUP INSTRUCTIONS:
+   * 1. Sign up at https://www.yoco.com/za/ and get your Public Key from the dashboard.
+   * 2. Replace 'pk_test_YOUR_PUBLIC_KEY_HERE' below with your Yoco Public Key.
+   * 3. For production, you need a backend endpoint to complete the charge.
+   *    See: https://developer.yoco.com/online/resources/guides/charge-overview
+   *
+   * For a quick start with Yoco Payment Links (no backend needed):
+   * - Create a payment link in your Yoco dashboard.
+   * - Replace the initiateCheckout function with: window.location.href = 'YOUR_YOCO_PAYMENT_LINK';
+   */
+  const YOCO_PUBLIC_KEY = 'pk_test_YOUR_PUBLIC_KEY_HERE'; // ← Replace with your key
+
+  function initiateCheckout() {
+    const items = Object.values(cart);
+    if (items.length === 0) return;
+
+    const totalZAR = items.reduce((s, i) => s + i.price * i.qty, 0);
+    const totalCents = totalZAR * 100;
+
+    const itemSummary = items.map(i => `${i.name} x${i.qty}`).join(', ');
+
+    try {
+      const yoco = new window.YocoSDK({ publicKey: YOCO_PUBLIC_KEY });
+      yoco.showPopup({
+        amountInCents: totalCents,
+        currency: 'ZAR',
+        name: '4 PILLARS MMA',
+        description: itemSummary,
+        callback: function(result) {
+          if (result.error) {
+            showToast('Payment error: ' + result.error.message);
+          } else {
+            /*
+             * result.id is the charge token.
+             * Send it to your backend to complete the charge:
+             *
+             * fetch('/api/charge', {
+             *   method: 'POST',
+             *   headers: { 'Content-Type': 'application/json' },
+             *   body: JSON.stringify({ token: result.id, amount: totalCents, items: cart })
+             * }).then(res => res.json()).then(data => {
+             *   if (data.success) { orderComplete(); }
+             * });
+             */
+            orderComplete();
+          }
+        }
+      });
+    } catch(e) {
+      /* Yoco SDK not available — show payment link fallback */
+      alert('Please configure your Yoco Public Key in index.html to enable checkout.\n\nSee the SETUP INSTRUCTIONS comment in the script section.');
+    }
+  }
+
+  function orderComplete() {
+    cart = {};
+    renderCart();
+    closeCart();
+    showToast('Order placed! Thank you for your order.');
+  }
+
+  /* ── Init ── */
+  renderCart();
+</script>
+
+</body>
+</html>

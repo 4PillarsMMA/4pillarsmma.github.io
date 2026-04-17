@@ -425,7 +425,10 @@
       margin-bottom: .2rem;
     }
     .cart-item-sub { font-size: .78rem; color: var(--muted); }
-    .cart-item-price { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; color: var(--teal); }
+    .cart-item-price { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; color: var(--teal); font-size: 1rem; }
+    .cart-item-unit-price { font-size: .72rem; color: var(--muted); margin: .1rem 0 .35rem; }
+    .cart-item-right { display: flex; flex-direction: column; align-items: flex-end; gap: .3rem; flex-shrink: 0; }
+    .cart-count-label { font-size: .72rem; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; letter-spacing: .05em; text-transform: uppercase; margin-top: .15rem; }
     .cart-qty {
       display: flex; align-items: center; gap: .5rem;
       margin-top: .5rem;
@@ -984,7 +987,7 @@
           </div>
           <div class="product-footer">
             <div class="product-price"><sup>R</sup>77</div>
-            <button class="add-to-cart" onclick="addToCart(1, 'Immune Booster', 77, 'Vitamin C + Zinc + D3', 'images/product-vitamin-fizzy.jpeg')">
+            <button class="add-to-cart" onclick="addToCart(this, 1, 'Immune Booster', 77, 'Vitamin C + Zinc + D3', 'images/product-vitamin-fizzy.jpeg')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
               Add to Cart
             </button>
@@ -1011,7 +1014,7 @@
           </div>
           <div class="product-footer">
             <div class="product-price"><sup>R</sup>350</div>
-            <button class="add-to-cart" onclick="addToCart(2, 'Creatine Pre-Workout', 350, '500g Tube', 'images/hero-creatine-water.jpeg')">
+            <button class="add-to-cart" onclick="addToCart(this, 2, 'Creatine Pre-Workout', 350, '500g Tube', 'images/hero-creatine-water.jpeg')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
               Add to Cart
             </button>
@@ -1037,7 +1040,7 @@
           </div>
           <div class="product-footer">
             <div class="product-price"><sup>R</sup>295</div>
-            <button class="add-to-cart" onclick="addToCart(3, 'Collagen', 295, '300g Tube', 'images/product-collagen.jpeg')">
+            <button class="add-to-cart" onclick="addToCart(this, 3, 'Collagen', 295, '300g Tube', 'images/promo-collagen.jpeg')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
               Add to Cart
             </button>
@@ -1063,7 +1066,7 @@
           </div>
           <div class="product-footer">
             <div class="product-price"><sup>R</sup>645</div>
-            <button class="add-to-cart" onclick="addToCart(4, 'Whey Protein', 645, '1kg Tube', 'images/hero-whey-smoke.jpeg')">
+            <button class="add-to-cart" onclick="addToCart(this, 4, 'Whey Protein', 645, '1kg Tube', 'images/hero-whey-smoke.jpeg')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
               Add to Cart
             </button>
@@ -1098,7 +1101,7 @@
           <div class="size-row"><span class="size-label">Adult (XXL – 4XL)</span><span class="size-price">R560</span></div>
         </div>
         <div class="merch-actions">
-          <button class="add-to-cart" onclick="addToCart(5, '4P Rashguard', 520, 'Adult S–XL', 'images/merch-rashguard.jpeg')">
+          <button class="add-to-cart" onclick="addToCart(this, 5, '4P Rashguard', 520, 'Adult S–XL', 'images/merch-rashguard.jpeg')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg>
             Add to Cart — from R450
           </button>
@@ -1285,7 +1288,10 @@
   </div>
   <div class="cart-footer" id="cartFooter" style="display:none;">
     <div class="cart-subtotal">
-      <span class="cart-subtotal-label">Subtotal</span>
+      <div>
+        <span class="cart-subtotal-label">Subtotal</span>
+        <div class="cart-count-label" id="cartItemCount">0 items</div>
+      </div>
       <span class="cart-subtotal-amount" id="cartTotal">R0</span>
     </div>
     <button class="checkout-btn" id="checkoutBtn" onclick="initiateCheckout()">
@@ -1334,47 +1340,77 @@
   /* ── Cart State ── */
   let cart = {};  // { id: { id, name, price, sub, img, qty } }
 
-  function addToCart(id, name, price, sub, img) {
+  /* Format currency: 1290 → "R 1 290" */
+  function fmt(n) {
+    return 'R\u00a0' + Number(n).toLocaleString('en-ZA', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
+  /* Persist cart to localStorage */
+  function saveCart() {
+    try { localStorage.setItem('4p_cart', JSON.stringify(cart)); } catch(e) {}
+  }
+  function loadCart() {
+    try {
+      const saved = localStorage.getItem('4p_cart');
+      if (saved) cart = JSON.parse(saved);
+    } catch(e) {}
+  }
+
+  function addToCart(btn, id, name, price, sub, img) {
+    price = Number(price);
     if (cart[id]) {
       cart[id].qty++;
     } else {
       cart[id] = { id, name, price, sub, img, qty: 1 };
     }
+    saveCart();
     renderCart();
     showToast(`${name} added to cart`);
     openCart();
+
+    /* Flash button gold */
+    if (btn) {
+      btn.classList.add('added');
+      setTimeout(() => btn.classList.remove('added'), 800);
+    }
   }
 
   function removeFromCart(id) {
     delete cart[id];
+    saveCart();
     renderCart();
   }
 
   function changeQty(id, delta) {
     if (!cart[id]) return;
-    cart[id].qty += delta;
-    if (cart[id].qty <= 0) removeFromCart(id);
-    else renderCart();
+    const next = cart[id].qty + delta;
+    if (next <= 0) {
+      delete cart[id];
+    } else {
+      cart[id].qty = next;
+    }
+    saveCart();
+    renderCart();
   }
 
   function renderCart() {
     const items = Object.values(cart);
-    const count = items.reduce((s, i) => s + i.qty, 0);
-    const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+    const totalQty  = items.reduce((s, i) => s + i.qty, 0);
+    const subtotal  = items.reduce((s, i) => s + i.price * i.qty, 0);
 
-    /* count badge */
+    /* Nav badge */
     const badge = document.getElementById('cartCount');
-    badge.textContent = count;
-    badge.classList.toggle('visible', count > 0);
+    badge.textContent = totalQty;
+    badge.classList.toggle('visible', totalQty > 0);
 
-    /* cart items */
     const container = document.getElementById('cartItems');
-    const empty = document.getElementById('cartEmpty');
-    const footer = document.getElementById('cartFooter');
+    const empty     = document.getElementById('cartEmpty');
+    const footer    = document.getElementById('cartFooter');
+
+    /* Remove previous item rows (leave the empty-state div untouched) */
+    container.querySelectorAll('.cart-item').forEach(el => el.remove());
 
     if (items.length === 0) {
-      container.innerHTML = '';
-      container.appendChild(empty);
       empty.style.display = 'flex';
       footer.style.display = 'none';
       return;
@@ -1382,25 +1418,32 @@
 
     empty.style.display = 'none';
     footer.style.display = 'block';
-    document.getElementById('cartTotal').textContent = `R${total}`;
 
-    container.innerHTML = '';
+    /* Update footer summary */
+    const itemWord = totalQty === 1 ? '1 item' : `${totalQty} items`;
+    document.getElementById('cartItemCount').textContent = itemWord;
+    document.getElementById('cartTotal').textContent = fmt(subtotal);
+    document.getElementById('checkoutBtn').textContent = `Pay ${fmt(subtotal)} · Checkout`;
+
+    /* Render each item row */
     items.forEach(item => {
+      const lineTotal = item.price * item.qty;
       const el = document.createElement('div');
       el.className = 'cart-item';
       el.innerHTML = `
         <img class="cart-item-img" src="${item.img}" alt="${item.name}">
-        <div>
+        <div style="flex:1;min-width:0;">
           <div class="cart-item-name">${item.name}</div>
           <div class="cart-item-sub">${item.sub}</div>
+          <div class="cart-item-unit-price">${fmt(item.price)} each</div>
           <div class="cart-qty">
             <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
             <span class="qty-val">${item.qty}</span>
             <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
           </div>
         </div>
-        <div>
-          <div class="cart-item-price">R${item.price * item.qty}</div>
+        <div class="cart-item-right">
+          <div class="cart-item-price">${fmt(lineTotal)}</div>
           <button class="cart-item-remove" onclick="removeFromCart(${item.id})" title="Remove">✕</button>
         </div>
       `;
@@ -1442,10 +1485,9 @@
     const items = Object.values(cart);
     if (items.length === 0) return;
 
-    const totalZAR = items.reduce((s, i) => s + i.price * i.qty, 0);
+    const totalZAR   = items.reduce((s, i) => s + i.price * i.qty, 0);
     const totalCents = totalZAR * 100;
-
-    const itemSummary = items.map(i => `${i.name} x${i.qty}`).join(', ');
+    const itemSummary = items.map(i => `${i.name} x${i.qty} (${fmt(i.price * i.qty)})`).join(', ');
 
     try {
       const yoco = new window.YocoSDK({ publicKey: YOCO_PUBLIC_KEY });
@@ -1488,6 +1530,7 @@
   }
 
   /* ── Init ── */
+  loadCart();
   renderCart();
 
   /* ── Mobile Carousel Dots ── */

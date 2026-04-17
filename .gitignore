@@ -1,0 +1,15 @@
+# ── Secrets — NEVER commit these ──────────────────────────────
+.env
+.env.local
+.env.production
+
+# ── Dependencies ───────────────────────────────────────────────
+node_modules/
+
+# ── Netlify build output ───────────────────────────────────────
+.netlify/
+
+# ── OS junk ───────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini

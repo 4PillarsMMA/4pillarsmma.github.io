@@ -465,12 +465,51 @@
       border: none; cursor: pointer;
       font-family: 'Barlow Condensed', sans-serif;
       font-size: 1.05rem; font-weight: 700;
-      letter-spacing: .12em; text-transform: uppercase;
+      letter-spacing: .1em; text-transform: uppercase;
       padding: 1rem;
       transition: all .2s;
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
     }
     .checkout-btn:hover { background: #3ed8d8; }
-    .checkout-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .checkout-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .checkout-btn.loading { background: var(--teal-dk); cursor: wait; }
+    .checkout-btn .spinner {
+      display: none;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(8,11,13,.3);
+      border-top-color: var(--dark);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    .checkout-btn.loading .spinner { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .continue-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.1);
+      color: var(--muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .88rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: .7rem; cursor: pointer;
+      transition: all .2s; margin-top: .5rem;
+    }
+    .continue-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+    .whatsapp-btn {
+      width: 100%;
+      background: #25d366; color: #fff;
+      border: none; cursor: pointer;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .92rem; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: .75rem; margin-top: .5rem;
+      transition: all .2s;
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+    }
+    .whatsapp-btn:hover { background: #1fba58; }
+    .whatsapp-btn svg { width: 18px; flex-shrink: 0; }
     .secure-note {
       display: flex; align-items: center; justify-content: center; gap: .4rem;
       margin-top: .75rem; font-size: .72rem;
@@ -1295,7 +1334,15 @@
       <span class="cart-subtotal-amount" id="cartTotal">R0</span>
     </div>
     <button class="checkout-btn" id="checkoutBtn" onclick="initiateCheckout()">
-      Checkout with Yoco
+      <span class="spinner"></span>
+      <span id="checkoutBtnText">Checkout with Yoco</span>
+    </button>
+    <button class="whatsapp-btn" id="whatsappBtn" onclick="orderViaWhatsApp()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.99.584 3.842 1.585 5.4L2 22l4.727-1.567A9.953 9.953 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z" fill-rule="evenodd" clip-rule="evenodd"/></svg>
+      Order via WhatsApp
+    </button>
+    <button class="continue-btn" onclick="closeCart()">
+      ← Continue Shopping
     </button>
     <div class="secure-note">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -1423,7 +1470,7 @@
     const itemWord = totalQty === 1 ? '1 item' : `${totalQty} items`;
     document.getElementById('cartItemCount').textContent = itemWord;
     document.getElementById('cartTotal').textContent = fmt(subtotal);
-    document.getElementById('checkoutBtn').textContent = `Pay ${fmt(subtotal)} · Checkout`;
+    document.getElementById('checkoutBtnText').textContent = `Pay ${fmt(subtotal)} · Checkout`;
 
     /* Render each item row */
     items.forEach(item => {
@@ -1468,26 +1515,48 @@
   }
 
   /* ── Yoco Checkout ── */
-  /*
-   * SETUP INSTRUCTIONS:
-   * 1. Sign up at https://www.yoco.com/za/ and get your Public Key from the dashboard.
-   * 2. Replace 'pk_test_YOUR_PUBLIC_KEY_HERE' below with your Yoco Public Key.
-   * 3. For production, you need a backend endpoint to complete the charge.
-   *    See: https://developer.yoco.com/online/resources/guides/charge-overview
-   *
-   * For a quick start with Yoco Payment Links (no backend needed):
-   * - Create a payment link in your Yoco dashboard.
-   * - Replace the initiateCheckout function with: window.location.href = 'YOUR_YOCO_PAYMENT_LINK';
-   */
-  const YOCO_PUBLIC_KEY = 'pk_test_YOUR_PUBLIC_KEY_HERE'; // ← Replace with your key
+  // ─────────────────────────────────────────────────────────────
+  // HOW TO LINK YOUR YOCO ACCOUNT:
+  //
+  // 1. Log in at https://app.yoco.com
+  // 2. Go to: Settings → Developers → API Keys
+  // 3. Copy your LIVE Public Key (starts with pk_live_...)
+  // 4. Paste it below, replacing 'pk_live_YOUR_KEY_HERE'
+  //
+  // NOTE: The public key is safe in this file — it only tokenises
+  // card details. Your Secret Key must NEVER go in frontend code.
+  //
+  // To actually charge the card you need one of:
+  //   A) A backend (Node/Python) that calls the Yoco Charges API
+  //      using your Secret Key — see orderComplete() below.
+  //   B) A free Netlify/Vercel serverless function (recommended
+  //      if you have no server — ask for help setting this up).
+  //   C) WhatsApp ordering — the "Order via WhatsApp" button
+  //      below works right now with zero backend needed.
+  // ─────────────────────────────────────────────────────────────
+  const YOCO_PUBLIC_KEY = 'pk_live_YOUR_KEY_HERE'; // ← paste your key here
+
+  function setCheckoutLoading(on) {
+    const btn = document.getElementById('checkoutBtn');
+    btn.classList.toggle('loading', on);
+    btn.disabled = on;
+  }
 
   function initiateCheckout() {
     const items = Object.values(cart);
     if (items.length === 0) return;
 
-    const totalZAR   = items.reduce((s, i) => s + i.price * i.qty, 0);
-    const totalCents = totalZAR * 100;
-    const itemSummary = items.map(i => `${i.name} x${i.qty} (${fmt(i.price * i.qty)})`).join(', ');
+    const totalZAR    = items.reduce((s, i) => s + i.price * i.qty, 0);
+    const totalCents  = totalZAR * 100;
+    const itemSummary = items.map(i => `${i.name} x${i.qty}`).join(', ');
+
+    if (!window.YocoSDK || YOCO_PUBLIC_KEY === 'pk_live_YOUR_KEY_HERE') {
+      showToast('Yoco key not set — using WhatsApp ordering instead');
+      orderViaWhatsApp();
+      return;
+    }
+
+    setCheckoutLoading(true);
 
     try {
       const yoco = new window.YocoSDK({ publicKey: YOCO_PUBLIC_KEY });
@@ -1497,36 +1566,69 @@
         name: '4 PILLARS MMA',
         description: itemSummary,
         callback: function(result) {
+          setCheckoutLoading(false);
           if (result.error) {
-            showToast('Payment error: ' + result.error.message);
-          } else {
-            /*
-             * result.id is the charge token.
-             * Send it to your backend to complete the charge:
-             *
-             * fetch('/api/charge', {
-             *   method: 'POST',
-             *   headers: { 'Content-Type': 'application/json' },
-             *   body: JSON.stringify({ token: result.id, amount: totalCents, items: cart })
-             * }).then(res => res.json()).then(data => {
-             *   if (data.success) { orderComplete(); }
-             * });
-             */
-            orderComplete();
+            showToast('Payment failed: ' + result.error.message);
+            return;
           }
+          // Send the one-time token to the Netlify serverless function
+          // which calls Yoco's charges API with the secret key.
+          setCheckoutLoading(true);
+          fetch('/.netlify/functions/charge', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              token: result.id,
+              amountInCents: totalCents,
+              items: Object.values(cart)
+            })
+          })
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            setCheckoutLoading(false);
+            if (data.success) {
+              orderComplete(totalZAR);
+            } else {
+              showToast('Payment failed: ' + (data.error || 'Please try again'));
+            }
+          })
+          .catch(function() {
+            setCheckoutLoading(false);
+            showToast('Network error — please try again.');
+          });
         }
       });
     } catch(e) {
-      /* Yoco SDK not available — show payment link fallback */
-      alert('Please configure your Yoco Public Key in index.html to enable checkout.\n\nSee the SETUP INSTRUCTIONS comment in the script section.');
+      setCheckoutLoading(false);
+      showToast('Could not open Yoco — try WhatsApp ordering below.');
     }
   }
 
-  function orderComplete() {
+  /* ── WhatsApp fallback — works with zero backend ── */
+  function orderViaWhatsApp() {
+    const items = Object.values(cart);
+    if (items.length === 0) return;
+
+    const lines = items.map(i =>
+      `  • ${i.name} x${i.qty} = ${fmt(i.price * i.qty)}`
+    ).join('\n');
+    const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+
+    const msg = encodeURIComponent(
+      `Hi 4 PILLARS! I'd like to place an order:\n\n${lines}\n\nTotal: ${fmt(total)}\n\nPlease confirm availability and payment details. Thank you!`
+    );
+
+    window.open(`https://wa.me/27655717718?text=${msg}`, '_blank');
+  }
+
+  function orderComplete(totalZAR) {
+    const msg = totalZAR ? `Order placed! Total: ${fmt(totalZAR)}. Thank you!` : 'Order placed! Thank you!';
+    saveCart();   // save empty cart
     cart = {};
+    saveCart();
     renderCart();
     closeCart();
-    showToast('Order placed! Thank you for your order.');
+    showToast(msg);
   }
 
   /* ── Init ── */
